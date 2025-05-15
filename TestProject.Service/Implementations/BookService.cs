@@ -51,6 +51,8 @@ public class BookService : IBookService
             bool isISBNExists = await _unitOfWork.Book.GetAnyAsync(y => y.ISBN == bookModel.ISBN && y.Id != bookModel.Id);
             if (isISBNExists) return new() { Status = false, Message = "This ISBN Number already exists." };
             
+            bool isSameNameBookExists = await _unitOfWork.Book.GetAnyAsync(y => y.Title.ToLower() == bookModel.Title.ToLower());
+            if(isSameNameBookExists) return new(){Status = false,Message = "Book With this name already exists."};
             MapBookAndBookModel(ref newBook, ref bookModel, isCreate: true);
             
             await FileUpload.UpdateProfileImageAsync(bookModel.UploadedBookImage, newBook, _hostEnvironment);
@@ -128,7 +130,9 @@ public class BookService : IBookService
 
             bool isISBNExists = await _unitOfWork.Book.GetAnyAsync(y => y.ISBN == bookModel.ISBN && y.Id != bookModel.Id);
             if (isISBNExists) return new() { Status = false, Message = "This ISBN Number already exists." };
-
+            
+            bool isSameNameBookExists = await _unitOfWork.Book.GetAnyAsync(y => y.Title.ToLower() == bookModel.Title.ToLower() && y.Id != bookModel.Id);
+            if(isSameNameBookExists) return new(){Status = false,Message = "Book With this name already exists."};
             MapBookAndBookModel(ref dbBook, ref bookModel, isCreate: false);
             await FileUpload.UpdateProfileImageAsync(bookModel.UploadedBookImage, dbBook, _hostEnvironment);
 
