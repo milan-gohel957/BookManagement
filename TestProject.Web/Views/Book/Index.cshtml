@@ -11,6 +11,8 @@
 
 @section Scripts {
     <script>
+        
+        let isCreateForm=true;
         let paginationObj = {
             page: 1,
             pageSize: 5,
@@ -58,7 +60,7 @@
 
         function getAddBookPage() {
             $.get("/Book/ShowUpsertBookModal", { bookId: 0 }, function (data, status) {
-                console.log(data)
+          
                 if (status === "success") {
 
                     if (data.result && data.result.status === false) {

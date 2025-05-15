@@ -4,10 +4,10 @@ namespace TestProject.Service.Interfaces;
 
 public interface IBookService
 {
-    Task<ResultObject> CreateBook(BookModel bookModel);
-    Task<(ResultObject, PaginationViewModel<BookModel>)> BookPagination(string order, int page, int pageSize, string search, bool isAscending);
-    Task<ResultObject> UpdateBook(BookModel bookModel);
-    Task<ResultObject> DeleteBook(int bookId);
-    Task<(ResultObject, BookModel)> ShowUpsertBookModal(int bookId);
+    Task<ResultObject> CreateBookAsync(BookModel bookModel);
+    Task<(ResultObject, PaginationViewModel<BookModel>)> BookPaginationAsync(string order, int page, int pageSize, string search, bool isAscending);
+    Task<ResultObject> UpdateBookAsync(BookModel bookModel);
+    Task<ResultObject> DeleteBookAsync(int bookId);
+    Task<(ResultObject, BookModel)> ShowUpsertBookModalAsync(int bookId);
 
 }

@@ -2,17 +2,16 @@
 <div class="h-100">
     <form id="forms" method="post" id="loginForm" asp-action="Login" asp-controller="Auth">
         <div class="mb-3 position-relative">
-            <label for="email" class="form-label text-white" asp-for="Email">Email address</label>
+            <label for="email" class="form-label " asp-for="Email">Email address</label>
             <div class="position-relative">
                 <input type="email" class="form-control pr-2" id="email" asp-for="Email" placeholder="Email">
                 <i class="bi bi-person-fill fs-4 input-icons cursor-pointer" id="user-icon"></i>
             </div>
-
             <span asp-validation-for="Email" class="text-danger fs-6"></span>
         </div>
 
         <div class="mb-3">
-            <label for="password" class="form-label text-white" asp-for="Password">Password</label>
+            <label for="password" class="form-label " asp-for="Password">Password</label>
             <div class="position-relative">
                 <input type="password" class="form-control" id="password" placeholder="Password" asp-for="Password">
                 <i class="bi bi-eye-fill fs-4 input-icons cursor-pointer" id="eye-icon" alt="bi-eye-fill"></i>
@@ -22,7 +21,7 @@
         <div class="mb-3 form-check d-flex justify-content-between">
             <div>
                 <input type="checkbox" class="form-check-input" id="rememberMe" asp-for="RememberMe">
-                <label class="form-check-label text-white" asp-for="RememberMe">Remember Me</label>
+                <label class="form-check-label " asp-for="RememberMe">Remember Me</label>
             </div>
             <div>
                 <div id="forgotPasswordLink" class="cursor-pointer">Forgot Password?</div>
@@ -38,5 +37,21 @@
     @{
         <partial name="_ValidationScriptsPartial" />
     }
+    <script>
+        $("#eye-icon").click(function () {
+            const eyeIcon=$("#eye-icon");
+            const passwordInput=$("#password")
+            if (eyeIcon.hasClass("bi-eye-fill")) {
+                eyeIcon.removeClass("bi-eye-fill");
+                eyeIcon.addClass("bi-eye-slash-fill");
+                passwordInput.prop('type','text');
+            }
+            else {
+                eyeIcon.addClass("bi-eye-fill");
+                eyeIcon.removeClass("bi-eye-slash-fill");
+                passwordInput.prop('type','password')
+            }
+        });
+    </script>
 
 }

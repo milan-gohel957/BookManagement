@@ -36,7 +36,7 @@ public class BookService : IBookService
         }
     }
     // Create Book
-    public async Task<ResultObject> CreateBook(BookModel bookModel)
+    public async Task<ResultObject> CreateBookAsync(BookModel bookModel)
     {
         try
         {
@@ -56,7 +56,7 @@ public class BookService : IBookService
     }
 
     // Pagination
-    public async Task<(ResultObject, PaginationViewModel<BookModel>)> BookPagination(string order, int page, int pageSize, string search, bool isAscending)
+    public async Task<(ResultObject, PaginationViewModel<BookModel>)> BookPaginationAsync(string order, int page, int pageSize, string search, bool isAscending)
     {
         try
         {
@@ -92,7 +92,7 @@ public class BookService : IBookService
         }
     }
     // Update Book
-    public async Task<ResultObject> UpdateBook(BookModel bookModel)
+    public async Task<ResultObject> UpdateBookAsync(BookModel bookModel)
     {
         try
         {
@@ -121,7 +121,7 @@ public class BookService : IBookService
         }
     }
     // Delete Book
-    public async Task<ResultObject> DeleteBook(int bookId)
+    public async Task<ResultObject> DeleteBookAsync(int bookId)
     {
         try
         {
@@ -147,7 +147,7 @@ public class BookService : IBookService
     }
 
 
-    public async Task<(ResultObject, BookModel)> ShowUpsertBookModal(int bookId)
+    public async Task<(ResultObject, BookModel)> ShowUpsertBookModalAsync(int bookId)
     {
         try
         {

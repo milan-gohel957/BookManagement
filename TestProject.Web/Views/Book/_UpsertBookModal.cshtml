@@ -4,49 +4,105 @@
 </button>
 
 <div class="modal fade" id="upsertBookModal" tabindex="-1" aria-labelledby="upsertBookModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="upsertBookModalLabel">Modal title</h1>
+               
+                <h1 class="modal-title fs-5" id="upsertBookModalLabel"> @(Model.Id > 0 || Model.Id == null ? "Add New Book" : "Update Book") </h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form method="post" asp-action=@(Model.Id > 0 || Model.Id == null ? "CreateBook" : "UpdateBook")>
-                    <input type="hidden" asp-for="Id"/>
+                <form method="post" asp-action=@(Model.Id > 0 || Model.Id == null ? "CreateBook" : "UpdateBook") id="upsertBookForm">
+                    <input type="hidden" asp-for="Id" />
                     <div class="mb-3">
                         <label asp-for="Title" class="form-label">Book Title</label>
-                        <input type="email" class="form-control" asp-for="Title" >
-                        <span asp-validation-for="Title"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="ISBN" class="form-label">ISBN</label>
-                        <input type="email" class="form-control" asp-for="ISBN" >
-                        <span asp-validation-for="ISBN"></span>
-                    </div>
-                    <div class="mb-3">
-                        <label asp-for="PublishedYear" class="form-label">Publish Year</label>
-                        <input type="email" class="form-control" asp-for="PublishedYear" >
-                        <span asp-validation-for="PublishedYear"></span>
+                        <input type="text" class="form-control" asp-for="Title">
+                        <span class="text-danger" asp-validation-for="Title"></span>
                     </div>
                     <div class="mb-3">
                         <label asp-for="AuthorName" class="form-label">Author Name</label>
-                        <input type="email" class="form-control" asp-for="AuthorName" >
-                        <span asp-validation-for="AuthorName"></span>
+                        <input class="form-control" asp-for="AuthorName">
+                        <span class="text-danger" asp-validation-for="AuthorName"></span>
                     </div>
                     <div class="mb-3">
-                        <label asp-for="TotalPages" class="form-label">Total Pages</label>
-                        <input type="email" class="form-control" asp-for="TotalPages" >
-                        <span asp-validation-for="TotalPages"></span>
+                        <label asp-for="ISBN" class="form-label">ISBN</label>
+                        <input class="form-control" asp-for="ISBN">
+                        <span class="text-danger" asp-validation-for="ISBN"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="PublishedYear" class="form-label">Publish Year</label>
+                        <input class="form-control" asp-for="PublishedYear">
+                        <span class="text-danger" asp-validation-for="PublishedYear"></span>
                     </div>
 
+                    <div class="mb-3">
+                        <label asp-for="TotalPages" class="form-label">Total Pages</label>
+                        <input class="form-control" asp-for="TotalPages">
+                        <span class="text-danger" asp-validation-for="TotalPages"></span>
+                    </div>
+                    <div class="mb-3">
+                        <div class=" bg-white rounded-circle p-1" style="top: 35%; left: 75%">
+                                <label for="upload-image">Upload Image Of Book</label>
+                                    <input type="file" multiple="multiple" class=" " name="UploadedBookImage" maxlength="1"
+                                        id="UploadedBookImage" accept="image/png, image/gif, image/jpeg"/>
+                            </div>
+                    </div>
+                    <div class="mb-3 ">
+                        <div class="w-100 d-flex justify-content-center align-items-center">
+                            <img src="@Model.BookImageUrl" alt="profile" height="100" width="100"
+                                class="@(Model.BookImageUrl == null ? "d-none":"")"  id="imgPreview" />
+                        </div>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal" >Close</button>
+                <button type="button" class="btn btn-primary" onclick="upsertBookAsync()">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 
-@{<partial name="_ValidationScriptsPartial"/>}
+@{
+    <partial name="_ValidationScriptsPartial" />
+}
+<script>
+    isCreateForm=@Html.Raw(Json.Serialize((Model.Id==0||Model.Id==null)));
+    console.log(isCreateForm)
+    $(function(){
+        $("#modalContainer").on("change","#UploadedBookImage",function(e){
+            debugger;
+            const tempPath = URL.createObjectURL(e.target.files[0]);
+            $("#imgPreview").prop('src', tempPath);
+            if ($("#imgPreview").hasClass("d-none"))
+                $("#imgPreview").removeClass("d-none");
+        });
+    })
+    
+    function upsertBookAsync() {
+        const isValid = $("#upsertBookModal").valid();
+        if (isValid) {
+            const formData = new FormData($("#upsertBookForm")[0])
+            $.ajax({
+                url:isCreateForm ? "/Book/CreateBook" : "/Book/UpdateBook",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.result.status) {
+                        $("#upsertBookModal").modal("hide");
+
+                    }
+                    else {
+                        toastr.error(data.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Ajax error:", error);
+                    toastr.error("An error occurred while processing your request.");
+                }
+            })
+        }
+    }
+</script>

@@ -16,11 +16,10 @@ public class BookModel
 
     [RegularExpression("^[12][0-9]{3}$", ErrorMessage = "Please Enter Valid Year.")]
     public int PublishedYear { get; set; }
-    [RegularExpression("((?:[\\dX]{13})|(?:[\\d\\-X]{17})|(?:[\\dX]{10})|(?:[\\d\\-X]{13}))")]
+    [RegularExpression("((?:[\\dX]{13})|(?:[\\d\\-X]{17})|(?:[\\dX]{10})|(?:[\\d\\-X]{13}))", ErrorMessage ="Invalid ISBN number")]
     public string ISBN { get; set; } = string.Empty;
     public string? BookImageUrl { get; set; }
     [Range(1, 10000, ErrorMessage = "Book Can't have pages more than 10000.")]
-
     public int TotalPages { get; set; }
     public IFormFile? UploadedBookImage { get; set; }
     public bool IsBookImageRemoved { get; set; } = false;

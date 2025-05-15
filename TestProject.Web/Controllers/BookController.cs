@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TestProject.Entity.ViewModels;
 using TestProject.Service.Interfaces;
 
 namespace TestProject.Web.Controllers;
@@ -17,9 +18,19 @@ public class BookController : Controller
     {
         return View();
     } 
+    [HttpPost]
+    public async Task<IActionResult> CreateBook(BookModel bookModel)
+    {
+        return Json(new {result = await _bookService.CreateBookAsync(bookModel)});
+    }
+    [HttpPost]
+    public async Task<IActionResult> UpdateBook(BookModel bookModel)
+    {
+        return Json(new {result = await _bookService.UpdateBookAsync(bookModel)});
+    }
     public async Task<IActionResult> BookPagination(int page, int pageSize, string search, string order, bool isAscending)
     {
-        var (result, bookPaginationModel) = await _bookService.BookPagination(page:page, pageSize:pageSize, order:order, search:search, isAscending:isAscending);
+        var (result, bookPaginationModel) = await _bookService.BookPaginationAsync(page:page, pageSize:pageSize, order:order, search:search, isAscending:isAscending);
         if(!result.Status) 
         {
             return Json(new{Result = result});
@@ -30,7 +41,7 @@ public class BookController : Controller
     [HttpGet]
     public async Task<IActionResult> ShowUpsertBookModal(int bookId)
     {
-        var(result, bookModel) =await _bookService.ShowUpsertBookModal(bookId);
+        var(result, bookModel) =await _bookService.ShowUpsertBookModalAsync(bookId);
         if(!result.Status){
             return Json(new{result});
         }
