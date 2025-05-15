@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
+using TestProject.Entity.Enums;
 
 namespace TestProject.Entity.ViewModels;
 
@@ -23,4 +24,6 @@ public class BookModel
     public int TotalPages { get; set; }
     public IFormFile? UploadedBookImage { get; set; }
     public bool IsBookImageRemoved { get; set; } = false;
+    
+    public BookStatusEnum BookStatus { get; set; } = BookStatusEnum.Available;
 }
