@@ -71,5 +71,20 @@
                 }
             })
         }
+
+        function getUpdateBookModal(bookId){
+            $.get("/Book/ShowUpsertBookModal", { bookId }, function (data, status) {
+          
+                if (status === "success") {
+
+                    if (data.result && data.result.status === false) {
+                        toastr.error(data.message)
+                    }
+                    $("#modalContainer").html(data);
+                    $("#upsertBookModal").modal("show");
+                }
+            })
+
+        }
     </script>
 }

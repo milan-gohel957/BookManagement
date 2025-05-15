@@ -19,10 +19,9 @@ public class FileUpload
         if (uploadedImage != null)
         {
             var uniqueFileName = GetUniqueFileName(uploadedImage.FileName);
-            var uploadsDirectory = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "uploads", "profile");
+            var uploadsDirectory = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", "uploads", "books");
             var filePath = Path.Combine(uploadsDirectory, uniqueFileName);
 
-            // If the user already has a profile image, delete the old one
             if (!string.IsNullOrEmpty(book.BookImageUrl))
             {
                 string absolutePath = Path.Combine(_hostEnvironment.ContentRootPath, "wwwroot", book.BookImageUrl[1..]);
@@ -31,7 +30,7 @@ public class FileUpload
                 {
                     try
                     {
-                        File.Delete(absolutePath);  // Delete the old profile image
+                        File.Delete(absolutePath);  
                     }
                     catch (Exception ex)
                     {

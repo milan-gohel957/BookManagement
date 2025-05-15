@@ -41,12 +41,14 @@ public class BookService : IBookService
         try
         {
             Book newBook = new();
+            bool isISBNExists = await _unitOfWork.Book.GetAnyAsync(y => y.ISBN == bookModel.ISBN && y.Id != bookModel.Id);
+            if (isISBNExists) return new() { Status = false, Message = "This ISBN Number already exists." };
             MapBookAndBookModel(ref newBook, ref bookModel, isCreate: true);
             await FileUpload.UpdateProfileImageAsync(bookModel.UploadedBookImage, newBook, _hostEnvironment);
 
             await _unitOfWork.Book.AddAsync(newBook);
 
-            return new() { Status = false, Message = "Book Created" };
+            return new() { Status = true, Message = "Book Created" };
         }
         catch (Exception ex)
         {
