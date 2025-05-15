@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TestProject.Entity.CustomValidators;
-using TestProject.Entity.Models;
 using TestProject.Entity.ViewModels;
 using TestProject.Service.Interfaces;
 

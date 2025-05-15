@@ -1,9 +1,14 @@
 <div class="w-100 d-flex justify-content-between">
     <h1>Books</h1>
-    @if (User.IsInRole("Admin"))
-    {
-        <button class="btn btn-primary" onclick="getAddBookPage()">Add Book</button>
-    }
+    <div class="d-flex flex-row gap-2 align-items-center">
+        <form class="nosubmit search-form d-block mr-4">
+            <input class="search" type="search" placeholder="Search..." id="search-input" />
+        </form>
+        @if (User.IsInRole("Admin"))
+        {
+            <button class="btn btn-primary" onclick="getAddBookPage()">Add Book</button>
+        }
+    </div>
 </div>
 <div id="pagination">
 
@@ -24,6 +29,23 @@
             search: "",
             order: "",
             isAscending: true
+        }
+
+        $("#search-input").change(function () {
+            paginationObj.search = $("#search-input").val();
+            debounce(function () {
+                updateBookPagination();
+            }, 400)();
+        })
+
+        function debounce(func, delay) {
+            let timeout;
+            return function (...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(this, args);
+                }, delay);
+            };
         }
         function handleOrderBy(id) {
             if (id === paginationObj.order) {
@@ -52,6 +74,7 @@
 
         function updateBookPagination() {
             $.get("/Book/BookPagination", { ...paginationObj }, function (data, status) {
+                debugger
                 if (status === "success") {
                     if (data.status === false) {
                         toastr.error(data.message)
@@ -89,7 +112,6 @@
                     $("#upsertBookModal").modal("show");
                 }
             })
-
         }
     </script>
 }

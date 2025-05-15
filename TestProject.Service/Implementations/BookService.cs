@@ -77,7 +77,8 @@ public class BookService : IBookService
 
             var issuedBooks = _unitOfWork.IssuedBook.Table;
             List<IssuedBook> issuedBooksToUser = await issuedBooks.Where(ib => ib.UserId == userId && ib.IsDeleted == false && ib.IsIssued == true).ToListAsync();
-            // search = search.ToLower();
+            if(!string.IsNullOrEmpty(search))
+                search = search.ToLower();
             PaginationViewModel<BookModel> booksPaginated = await _unitOfWork.Book.GetPaginationViewModel<BookModel>(
                 search: search,
                 order: order,
@@ -85,9 +86,8 @@ public class BookService : IBookService
                 pageSize: pageSize,
                 filter: b => b.AuthorName.ToLower().Contains(search) ||
                             b.Title.ToLower().Contains(search) ||
-                            b.BookStatus.ToString().Contains(search) ||
-                            b.ISBN.ToLower().Contains(search) ||
-                            b.PublishedYear.ToString().Contains(search),
+                            b.ISBN.ToLower().Contains(search),
+
                 orderBy: order switch
                 {
                     "id" => b => b.Id,
@@ -112,7 +112,7 @@ public class BookService : IBookService
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            return (new() { Status = false, Message = "Error While Creating Book." }, new());
+            return (new() { Status = false, Message = "Error While Getting Pagiation Book." }, new());
         }
     }
     // Update Book

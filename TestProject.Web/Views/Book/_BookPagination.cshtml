@@ -8,12 +8,57 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col" id="id" onclick="handleOrderBy(this.id)">Id</th>
+            <th scope="col" id="id" onclick="handleOrderBy(this.id)">Id
+                @if(Model.Order == "id"){
+                    @if(Model.IsAscending){
+                        <i class="bi bi-arrow-up"></i>
+                    }
+                    else{
+                        <i class="bi bi-arrow-down"></i>
+                    }
+                }
+            </th>
             <th scope="col" id="image">Book Image</th>
-            <th scope="col" id="title" onclick="handleOrderBy(this.id)">Book Name</th>
-            <th scope="col" id="authorName" onclick="handleOrderBy(this.id)">Author</th>
-            <th scope="col" id="isbn" onclick="handleOrderBy(this.id)">ISBN</th>
-            <th scope="col" id="publishYear" onclick="handleOrderBy(this.id)">Publish Year</th>
+            <th scope="col" id="title" onclick="handleOrderBy(this.id)">Book Name
+                @if(Model.Order == "title"){
+                    @if(Model.IsAscending){
+                        <i class="bi bi-arrow-up"></i>
+                    }
+                    else{
+                        <i class="bi bi-arrow-down"></i>
+                    }
+                }
+            </th>
+            <th scope="col" id="authorName" onclick="handleOrderBy(this.id)">Author
+                @if(Model.Order == "authorName"){
+                    @if(Model.IsAscending){
+                        <i class="bi bi-arrow-up"></i>
+                    }
+                    else{
+                        <i class="bi bi-arrow-down"></i>
+                    }
+                }
+            </th>
+            <th scope="col" id="isbn" onclick="handleOrderBy(this.id)">ISBN
+                @if(Model.Order == "isbn"){
+                    @if(Model.IsAscending){
+                        <i class="bi bi-arrow-up"></i>
+                    }
+                    else{
+                        <i class="bi bi-arrow-down"></i>
+                    }
+                }
+            </th>
+            <th scope="col" id="publishYear" onclick="handleOrderBy(this.id)">
+                @if(Model.Order == "publishYear"){
+                    @if(Model.IsAscending){
+                        <i class="bi bi-arrow-up"></i>
+                    }
+                    else{
+                        <i class="bi bi-arrow-down"></i>
+                    }
+                }
+                Publish Year</th>
             <th scope="col" id="bookStatus">Status</th>
             <th scope="col" id="bookStatus">Issue</th>
 

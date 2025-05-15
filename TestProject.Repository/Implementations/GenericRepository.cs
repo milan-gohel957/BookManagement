@@ -62,17 +62,9 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
             query = includes(query);
         }
 
-        if (order != null)
-        {
-            var property = typeof(T).GetProperty(order);
-            if (property != null)
-            {
-                query = isAscending == true ? query.OrderBy(e => property) : query.OrderByDescending(e => property);
-            }
-        }
-
         if (!string.IsNullOrEmpty(search))
             query = query.Where(filter);
+            
         if (orderBy != null)
         {
             if (isAscending == true)
@@ -103,7 +95,8 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
             Page = page,
             PageSize = pageSize,
             TotalPages = totalPages,
-            Search = search
+            Search = search,
+            IsAscending = isAscending??false
         };
 
 
