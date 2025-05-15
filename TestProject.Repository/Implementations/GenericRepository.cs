@@ -38,7 +38,9 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
 
     public async Task<TEntity?> GetItemByIdAsync(int itemId, bool? getDeleted = false)
     {
-        return getDeleted == true ? await _dbSet.FirstOrDefaultAsync(y => EF.Property<int>(y, "Id") == itemId):await NonDeletedQuery().FirstOrDefaultAsync(y => EF.Property<int>(y, "Id") == itemId);
+    
+        var entity =  getDeleted == true ? await _dbSet.FirstOrDefaultAsync(y => EF.Property<int>(y, "Id") == itemId) : await NonDeletedQuery().FirstOrDefaultAsync(y => EF.Property<int>(y, "Id") == itemId);
+        return entity;
     }
     public async Task<bool> GetAnyAsync(Expression<Func<TEntity, bool>> expresssion, bool? getDeleted = false)
     {
@@ -54,7 +56,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
        bool? isAscending = null,
        Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null) where T : class
     {
-        IQueryable<TEntity> query = _dbSet;
+        IQueryable<TEntity> query = NonDeletedQuery();
         if (includes != null)
         {
             query = includes(query);

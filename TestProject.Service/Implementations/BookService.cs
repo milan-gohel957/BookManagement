@@ -1,5 +1,7 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using TestProject.Entity.Enums;
 using TestProject.Entity.Models;
 using TestProject.Entity.ViewModels;
 using TestProject.Repository.Interfaces;
@@ -148,7 +150,6 @@ public class BookService : IBookService
         }
     }
 
-
     public async Task<(ResultObject, BookModel)> ShowUpsertBookModalAsync(int bookId)
     {
         try
@@ -158,7 +159,7 @@ public class BookService : IBookService
                 return (new() { Status = true, Message = "Success." }, new());
             }
             Book? dbBook = await _unitOfWork.Book.GetItemByIdAsync(bookId);
-            if(dbBook == null) return (new() { Status = false, Message = "Error While deleting Book." }, new());
+            if (dbBook == null) return (new() { Status = false, Message = "Error While deleting Book." }, new());
 
             return (new() { Status = true, Message = "Success." }, _mapper.Map<BookModel>(dbBook));
         }
@@ -166,6 +167,50 @@ public class BookService : IBookService
         {
             Console.WriteLine(ex.Message);
             return (new() { Status = false, Message = "Error While deleting Book." }, new());
+        }
+    }
+
+    public async Task<ResultObject> IssueBookAsync(int bookId, int userId)
+    {
+        try
+        {
+            Book? dbBook = await _unitOfWork.Book.GetItemByIdAsync(bookId);
+            if (dbBook == null) return new() { Status = false, Message = "Book Not Found." };
+
+            if (dbBook.BookStatus == BookStatusEnum.Issued) return new() { Status = false, Message = "You can't issue this book, Because it is already assign to someone else." };
+
+            bool isUserExists = await _unitOfWork.User.GetAnyAsync(u => u.Id == userId);
+            if (!isUserExists) return new() { Status = false, Message = "User Not Found." };
+
+            var issuedBooksTable = _unitOfWork.IssuedBook.Table;
+            List<IssuedBook> issuedBooks = await issuedBooksTable.Where(ibt => ibt.UserId == userId).ToListAsync();
+            if (issuedBooks.Count >= 3) return new() { Status = false, Message = "You can't issue more than 3 books." };
+
+            IssuedBook newBookIssue = new()
+            {
+                BookId = bookId,
+                UserId = userId,
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                IsDeleted = false,
+                IsIssued = true,
+            };
+            await _unitOfWork.IssuedBook.AddAsync(newBookIssue);
+
+            dbBook.BookStatus = BookStatusEnum.Issued;
+
+            ResultObject saveResult = await _unitOfWork.SaveAsync();
+            if (!saveResult.Status)
+            {
+                return saveResult;
+            }
+            return new(){Status= true, Message = "Book Issued!"};
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return new() { Status = false, Message = "Error Issuing Book." };
         }
     }
 }

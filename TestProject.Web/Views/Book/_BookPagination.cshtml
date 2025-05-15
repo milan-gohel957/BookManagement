@@ -14,7 +14,10 @@
             <th scope="col" id="authorName" onclick="handleOrderBy(this.id)">Author</th>
             <th scope="col" id="isbn" onclick="handleOrderBy(this.id)">ISBN</th>
             <th scope="col" id="publishYear" onclick="handleOrderBy(this.id)">Publish Year</th>
-            <th scope="col" id="actions">Action</th>
+            @if (User.IsInRole("Admin"))
+            {
+                <th scope="col" id="actions">Action</th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -31,12 +34,15 @@
                 <td>@Book.AuthorName</td>
                 <td>@Book.ISBN</td>
                 <td>@Book.PublishedYear</td>
-                <td>
-                    <div class="d-flex flex-row">
-                        <i class="bi bi-pen cursor-pointer me-3" onclick="getUpdateBookModal(@Book.Id)"></i>
-                        <i class="bi bi-trash cursor-pointer"></i>
-                    </div>
-                </td>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        <div class="d-flex flex-row">
+                            <i class="bi bi-pen cursor-pointer me-3" onclick="getUpdateBookModal(@Book.Id)"></i>
+                            <i class="bi bi-trash cursor-pointer" onclick="getDeleteModal(@Book.Id)"></i>
+                        </div>
+                    </td>
+                }
             </tr>
         }
     </tbody>
@@ -49,5 +55,18 @@
         <option value="25">25</option>
     </select>
     <button class="btn btn-primary" onclick="loadPreviousPage()" @(Model.Page == 1 ? "disabled" : "")>&lt;</button>
-    <button class="btn btn-primary" onclick="loadNextPage()" @(Model.Page == Model.TotalPages ? "disabled" : "")> &gt;</button>
+    <button class="btn btn-primary" onclick="loadNextPage()" @(Model.Page == Model.TotalPages ? "disabled" : "")>
+        &gt;</button>
 </div>
+
+<script>
+    function getDeleteModal(bookId) {
+        $.get("/Book/ShowDeleteModal", function (data, status) {
+            deleteBookId = bookId;
+            if (status === "success") {
+                $("#modalContainer").html(data);
+                $("#deleteModal").modal("show");
+            }
+        })
+    }
+</script>
