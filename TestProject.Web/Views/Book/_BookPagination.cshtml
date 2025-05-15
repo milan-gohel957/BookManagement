@@ -1,0 +1,53 @@
+@model PaginationViewModel<BookModel>
+<style>
+    #pageSize {
+        max-width: 200px;
+        width: 90vw;
+    }
+</style>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col" id="id" onclick="handleOrderBy(this.id)">Id</th>
+            <th scope="col" id="image">Book Image</th>
+            <th scope="col" id="title" onclick="handleOrderBy(this.id)">Book Name</th>
+            <th scope="col" id="authorName" onclick="handleOrderBy(this.id)">Author</th>
+            <th scope="col" id="isbn" onclick="handleOrderBy(this.id)">ISBN</th>
+            <th scope="col" id="publishYear" onclick="handleOrderBy(this.id)">Publish Year</th>
+            <th scope="col" id="actions">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Book in Model.Items)
+        {
+            <tr>
+                <th scope="row">@Book.Id</th>
+                <td>
+                    <img src="@Book.BookImageUrl" alt="book image" height="100" width="100">
+                </td>
+                <td>
+                    @Book.Title
+                </td>
+                <td>@Book.AuthorName</td>
+                <td>@Book.ISBN</td>
+                <td>@Book.PublishedYear</td>
+                <td>
+                    <div class="d-flex flex-row">
+                        <i class="bi bi-pen cursor-pointer me-3" onclick=""></i>
+                        <i class="bi bi-trash cursor-pointer"></i>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="d-flex flex-row gap-2 justify-content-end">
+    <select name="pageSize" class="form-select" id="pageSize" onchange="changePageSize()">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="25">25</option>
+    </select>
+    <button class="btn btn-primary" onclick="loadPreviousPage()" @(Model.Page == 1 ? "disabled" : "")>&lt;</button>
+    <button class="btn btn-primary" onclick="loadNextPage()" @(Model.Page == Model.TotalPages ? "disabled" : "")> &gt;</button>
+</div>

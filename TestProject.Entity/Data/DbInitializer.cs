@@ -74,8 +74,8 @@ public class DbInitializer
             new Role() { Id = 2, RoleName = "User" }
         );
         modelBuilder.Entity<Book>().HasData(
-            new Book() {Id = 1, AuthorName = "Chinua Achebe" , BookImageUrl = "https://unsplash.com/photos/9DaOYUYnOls", TotalPages = 209, Title = "Things Fall Apart", PublishedYear = 1958, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, ISBN = "7624133121"},
-            new Book() {Id = 2, AuthorName = "Hans Christian Andersen" , BookImageUrl = "https://unsplash.com/photos/CXYPfveiuis", TotalPages = 784, Title = "Fairy tales", PublishedYear = 1836, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, ISBN = "9153676823"}
+            new Book() {Id = 1, AuthorName = "Chinua Achebe" , BookImageUrl = "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", TotalPages = 209, Title = "Things Fall Apart", PublishedYear = 1958, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, ISBN = "7624133121"},
+            new Book() {Id = 2, AuthorName = "Hans Christian Andersen" , BookImageUrl = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", TotalPages = 784, Title = "Fairy tales", PublishedYear = 1836, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, ISBN = "9153676823"}
         );
         modelBuilder.Entity<IssuedBook>().HasData(
             new IssuedBook() {Id = 1, UserId = 1, BookId = 1, IsIssued = true, }

@@ -1,14 +1,14 @@
 using AutoMapper;
 using Microsoft.Extensions.Hosting;
-using TestProject.Entity.Enums;
 using TestProject.Entity.Models;
 using TestProject.Entity.ViewModels;
 using TestProject.Repository.Interfaces;
 using TestProject.Service.Helpers;
+using TestProject.Service.Interfaces;
 
 namespace TestProject.Service.Implementations;
 
-public class BookService
+public class BookService : IBookService
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,18 +19,30 @@ public class BookService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
     }
+    private static void MapBookAndBookModel(ref Book book, ref BookModel bookModel, bool isCreate)
+    {
+        book.AuthorName = bookModel.AuthorName;
+        book.ISBN = bookModel.ISBN;
+        book.PublishedYear = bookModel.PublishedYear;
+        book.Title = bookModel.Title;
+        book.TotalPages = bookModel.TotalPages;
+        book.UpdatedAt = DateTime.Now;
+
+        if (isCreate)
+        {
+            book.IsDeleted = false;
+            book.UpdatedAt = DateTime.Now;
+            book.CreatedAt = DateTime.Now;
+        }
+    }
     // Create Book
     public async Task<ResultObject> CreateBook(BookModel bookModel)
     {
         try
         {
-            Book newBook = _mapper.Map<Book>(bookModel);
+            Book newBook = new();
+            MapBookAndBookModel(ref newBook, ref bookModel, isCreate: true);
             await FileUpload.UpdateProfileImageAsync(bookModel.UploadedBookImage, newBook, _hostEnvironment);
-
-            newBook.CreatedAt = DateTime.Now;
-            newBook.UpdatedAt = DateTime.Now;
-            newBook.BookStatus = BookStatusEnum.Available;
-            newBook.IsDeleted = false;
 
             await _unitOfWork.Book.AddAsync(newBook);
 
@@ -48,18 +60,19 @@ public class BookService
     {
         try
         {
-            search = search.ToLower();
+            // search = search.ToLower();
             PaginationViewModel<BookModel> booksPaginated = await _unitOfWork.Book.GetPaginationViewModel<BookModel>(
-                search:search,
-                order:order,
-                page:page,
-                pageSize:pageSize,
-                filter: b => b.AuthorName.ToLower().Contains(search) || 
+                search: search,
+                order: order,
+                page: page,
+                pageSize: pageSize,
+                filter: b => b.AuthorName.ToLower().Contains(search) ||
                             b.Title.ToLower().Contains(search) ||
                             b.BookStatus.ToString().Contains(search) ||
                             b.ISBN.ToLower().Contains(search) ||
                             b.PublishedYear.ToString().Contains(search),
-                orderBy: order switch {
+                orderBy: order switch
+                {
                     "id" => b => b.Id,
                     "isbn" => b => b.ISBN,
                     "title" => b => b.Title,
@@ -69,7 +82,7 @@ public class BookService
                 },
                 isAscending
             );
-            ResultObject resultObject = new(){Status = true, Message = "Success"};
+            ResultObject resultObject = new() { Status = true, Message = "Success" };
             return (resultObject, booksPaginated);
         }
         catch (Exception ex)
@@ -83,7 +96,7 @@ public class BookService
     {
         try
         {
-            if (bookModel.Id == null || bookModel.Id <= 0) return new() { Status = false, Message = "Book Not found" };
+            if (bookModel.Id <= 0) return new() { Status = false, Message = "Book Not found" };
 
             Book? dbBook = await _unitOfWork.Book.GetItemByIdAsync(bookModel.Id ?? 0);
             if (dbBook == null) return new() { Status = false, Message = "Book Not Found" };
@@ -92,9 +105,7 @@ public class BookService
             bool isISBNExists = await _unitOfWork.Book.GetAnyAsync(y => y.ISBN == bookModel.ISBN && y.Id != bookModel.Id);
             if (isISBNExists) return new() { Status = false, Message = "This ISBN Number already exists." };
 
-
-            dbBook = _mapper.Map<Book>(bookModel);
-            dbBook.UpdatedAt = DateTime.Now;
+            MapBookAndBookModel(ref dbBook, ref bookModel, isCreate: false);
 
             ResultObject saveResult = await _unitOfWork.SaveAsync();
             if (!saveResult.Status)
@@ -135,4 +146,24 @@ public class BookService
         }
     }
 
+
+    public async Task<(ResultObject, BookModel)> ShowUpsertBookModal(int bookId)
+    {
+        try
+        {
+            if (bookId <= 0)
+            {
+                return (new() { Status = true, Message = "Success." }, new());
+            }
+            Book? dbBook = await _unitOfWork.Book.GetItemByIdAsync(bookId);
+            if(dbBook == null) return (new() { Status = false, Message = "Error While deleting Book." }, new());
+
+            return (new() { Status = true, Message = "Success." }, _mapper.Map<BookModel>(dbBook));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return (new() { Status = false, Message = "Error While deleting Book." }, new());
+        }
+    }
 }

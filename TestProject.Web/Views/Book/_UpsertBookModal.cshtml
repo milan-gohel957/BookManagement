@@ -1,0 +1,52 @@
+@model BookModel
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#upsertBookModal">
+    Launch demo modal
+</button>
+
+<div class="modal fade" id="upsertBookModal" tabindex="-1" aria-labelledby="upsertBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="upsertBookModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action=@(Model.Id > 0 || Model.Id == null ? "CreateBook" : "UpdateBook")>
+                    <input type="hidden" asp-for="Id"/>
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Book Title</label>
+                        <input type="email" class="form-control" asp-for="Title" >
+                        <span asp-validation-for="Title"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ISBN" class="form-label">ISBN</label>
+                        <input type="email" class="form-control" asp-for="ISBN" >
+                        <span asp-validation-for="ISBN"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="PublishedYear" class="form-label">Publish Year</label>
+                        <input type="email" class="form-control" asp-for="PublishedYear" >
+                        <span asp-validation-for="PublishedYear"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="AuthorName" class="form-label">Author Name</label>
+                        <input type="email" class="form-control" asp-for="AuthorName" >
+                        <span asp-validation-for="AuthorName"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="TotalPages" class="form-label">Total Pages</label>
+                        <input type="email" class="form-control" asp-for="TotalPages" >
+                        <span asp-validation-for="TotalPages"></span>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@{<partial name="_ValidationScriptsPartial"/>}

@@ -18,6 +18,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 var connectionString = builder.Configuration.GetConnectionString("TestProjectDatabase");
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddDbContext<ProjectContext>(options =>

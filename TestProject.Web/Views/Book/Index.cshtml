@@ -1,0 +1,73 @@
+<div class="w-100 d-flex justify-content-between">
+    <h1>Books</h1>
+    <button class="btn btn-primary" onclick="getAddBookPage()">Add Book</button>
+</div>
+<div id="pagination">
+
+</div>
+<div id="modalContainer">
+
+</div>
+
+@section Scripts {
+    <script>
+        let paginationObj = {
+            page: 1,
+            pageSize: 5,
+            search: "",
+            order: "",
+            isAscending: true
+        }
+        function handleOrderBy(id) {
+            if (id === paginationObj.order) {
+                paginationObj.isAscending = !paginationObj.isAscending;
+            }
+            else {
+                paginationObj.isAscending = true
+            }
+
+            paginationObj.order = id;
+            updateBookPagination();
+        }
+        updateBookPagination();
+        function loadNextPage() {
+            paginationObj.page = paginationObj.page + 1;
+            updateBookPagination();
+        }
+        function loadPreviousPage() {
+            paginationObj.page -= 1;
+            updateBookPagination();
+        }
+        function changePageSize() {
+            paginationObj.pageSize = parseInt($("#pageSize").val());
+            updateBookPagination();
+        }
+
+        function updateBookPagination() {
+            $.get("/Book/BookPagination", { ...paginationObj }, function (data, status) {
+                if (status === "success") {
+                    if (data.status === false) {
+                        toastr.error(data.message)
+                    }
+
+                    $("#pagination").html(data);
+                    $("#pageSize").val(paginationObj.pageSize)
+                }
+            })
+        }
+
+        function getAddBookPage() {
+            $.get("/Book/ShowUpsertBookModal", { bookId: 0 }, function (data, status) {
+                console.log(data)
+                if (status === "success") {
+
+                    if (data.result && data.result.status === false) {
+                        toastr.error(data.message)
+                    }
+                    $("#modalContainer").html(data);
+                    $("#upsertBookModal").modal("show");
+                }
+            })
+        }
+    </script>
+}

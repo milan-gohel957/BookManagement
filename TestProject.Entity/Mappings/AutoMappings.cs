@@ -7,7 +7,6 @@ public class AutoMappings : Profile
 {
     public AutoMappings()
     {
-        CreateMap<Book, BookModel>()
-        .ForMember(model => model.Id, src => src.Ignore());
+        CreateMap<Book, BookModel>();
     }
 }

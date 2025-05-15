@@ -19,7 +19,9 @@ public class BookModel
     [RegularExpression("((?:[\\dX]{13})|(?:[\\d\\-X]{17})|(?:[\\dX]{10})|(?:[\\d\\-X]{13}))")]
     public string ISBN { get; set; } = string.Empty;
     public string? BookImageUrl { get; set; }
+    [Range(1, 10000, ErrorMessage = "Book Can't have pages more than 10000.")]
 
-    public IFormFile? UploadedBookImage{get;set;}
-    public bool IsBookImageRemoved {get;set;}= false;
+    public int TotalPages { get; set; }
+    public IFormFile? UploadedBookImage { get; set; }
+    public bool IsBookImageRemoved { get; set; } = false;
 }

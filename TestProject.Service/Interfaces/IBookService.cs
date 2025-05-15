@@ -8,4 +8,6 @@ public interface IBookService
     Task<(ResultObject, PaginationViewModel<BookModel>)> BookPagination(string order, int page, int pageSize, string search, bool isAscending);
     Task<ResultObject> UpdateBook(BookModel bookModel);
     Task<ResultObject> DeleteBook(int bookId);
+    Task<(ResultObject, BookModel)> ShowUpsertBookModal(int bookId);
+
 }
