@@ -93,4 +93,29 @@ public class AuthService : IAuthService
         return new() { Status = true, Message = "User Logged In Successfully.", RedirectUrl = "/" };
     }
 
+    public async Task<ResultObject> SignUpAsync(SignUpModel signUpModel)
+    {
+        try
+        {
+            User? user = await _unitOfWork.User.GetFirstOrDefaultAsync(expression: x => x.Email.Trim() == signUpModel.Email);
+            if (user != null) return new() { Status = false, Message = "User With this Email Already Exists." };
+
+            User newUser = new(){
+                CreatedAt = DateTime.Now,
+                UpdatedAt = DateTime.Now,
+                Email = signUpModel.Email,
+                Password = Hash.HashPassword(signUpModel.Password),
+                RoleId = (int)RoleType.User
+            };
+
+            await _unitOfWork.User.AddAsync(newUser);
+            return new(){Status =true, Message = "Sign Up SuccessFull!"};
+        }
+        catch (Exception ex)
+        {
+            return new() { Status = false, Message = "Error While Signing Up" };
+        }
+    }
+
+
 }

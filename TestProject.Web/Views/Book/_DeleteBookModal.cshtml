@@ -25,7 +25,6 @@
 
 <script>
     function deleteConfirmed() {
-        debugger;
         $.post("/Book/DeleteBook", { bookId: deleteBookId }, function (data) {
             if (data.result.status) {
                 $("#deleteModal").modal("hide");

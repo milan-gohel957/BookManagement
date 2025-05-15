@@ -74,7 +74,6 @@
 
         function updateBookPagination() {
             $.get("/Book/BookPagination", { ...paginationObj }, function (data, status) {
-                debugger
                 if (status === "success") {
                     if (data.status === false) {
                         toastr.error(data.message)

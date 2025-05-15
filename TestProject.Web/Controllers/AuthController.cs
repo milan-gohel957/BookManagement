@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using TestProject.Entity.CustomValidators;
 using TestProject.Entity.ViewModels;
 using TestProject.Service.Interfaces;
 
@@ -23,7 +24,19 @@ public class AuthController : Controller
         
         return View();
     }
+    public IActionResult SignUp()
+    {
+        if(User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            return RedirectToAction("Index", "Home");
+        }
+        
+        return View();
+    }
+
+    
     [HttpPost]
+    [Trim]
     public async Task<IActionResult> Login(LoginModel loginModel)
     {
         if(!ModelState.IsValid){
@@ -42,7 +55,27 @@ public class AuthController : Controller
             return View(loginModel);
         }
         TempData["success"] = "Login Successfull!";
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Book");
+    }
+    [HttpPost]
+    [Trim]
+
+    public async Task<IActionResult> SignUp(SignUpModel signUpModel)
+    {
+        if(!ModelState.IsValid){
+            TempData["error"] = "Model State is invalid";
+            return View("SignUp",signUpModel);
+        }
+
+        ResultObject resultObject = await _authService.SignUpAsync(signUpModel);
+        
+        if(!resultObject.Status)
+        {
+            TempData["error"] = resultObject.Message;
+            return View("SignUp",signUpModel);
+        }
+        TempData["success"] = "Sign Up Successfull!";
+        return RedirectToAction("Login", "Auth");
     }
     public IActionResult LogOut()
     {
