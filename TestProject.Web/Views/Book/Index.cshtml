@@ -1,6 +1,9 @@
 <div class="w-100 d-flex justify-content-between">
     <h1>Books</h1>
-    <button class="btn btn-primary" onclick="getAddBookPage()">Add Book</button>
+    @if (User.IsInRole("Admin"))
+    {
+        <button class="btn btn-primary" onclick="getAddBookPage()">Add Book</button>
+    }
 </div>
 <div id="pagination">
 
@@ -11,10 +14,10 @@
 
 @section Scripts {
     <script>
-        
-        let isCreateForm=true;
-        let deleteBookId=0;
-        let userId=parseInt("@(User.FindFirst(ClaimTypes.NameIdentifier)?.Value)");
+
+        let isCreateForm = true;
+        let deleteBookId = 0;
+        let userId = parseInt("@(User.FindFirst(ClaimTypes.NameIdentifier)?.Value)");
         let paginationObj = {
             page: 1,
             pageSize: 5,
@@ -62,7 +65,7 @@
 
         function getAddBookPage() {
             $.get("/Book/ShowUpsertBookModal", { bookId: 0 }, function (data, status) {
-          
+
                 if (status === "success") {
 
                     if (data.result && data.result.status === false) {
@@ -74,7 +77,7 @@
             })
         }
 
-        function getUpdateBookModal(bookId){
+        function getUpdateBookModal(bookId) {
             $.get("/Book/ShowUpsertBookModal", { bookId }, function (data, status) {
           
                 if (status === "success") {

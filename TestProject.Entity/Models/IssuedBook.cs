@@ -13,7 +13,7 @@ public class IssuedBook
     [ForeignKey("Book")]
     [Required]
     public int BookId{get;set;}
-    public bool IsIssued{get;set;} = false;
+    public bool IsIssued{get;set;} = true;
     public User User{get;set;} = null!;
     public Book Book{get;set;} = null!;
     public DateTime CreatedAt { get; set; }

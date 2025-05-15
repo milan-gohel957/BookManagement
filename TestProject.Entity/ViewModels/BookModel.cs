@@ -26,4 +26,5 @@ public class BookModel
     public bool IsBookImageRemoved { get; set; } = false;
     
     public BookStatusEnum BookStatus { get; set; } = BookStatusEnum.Available;
+
 }

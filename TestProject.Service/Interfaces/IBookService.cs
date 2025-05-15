@@ -9,6 +9,6 @@ public interface IBookService
     Task<ResultObject> UpdateBookAsync(BookModel bookModel);
     Task<ResultObject> DeleteBookAsync(int bookId);
     Task<(ResultObject, BookModel)> ShowUpsertBookModalAsync(int bookId);
-    Task<ResultObject> IssueBookAsync(int bookId, int userId);
-
+    Task<ResultObject> IssueBookAsync(int bookId);
+    Task<ResultObject> ReturnBookAsync(int bookId);
 }

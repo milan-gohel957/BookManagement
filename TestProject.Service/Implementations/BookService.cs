@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -15,8 +16,11 @@ public class BookService : IBookService
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IHostEnvironment _hostEnvironment;
-    public BookService(IMapper mapper, IUnitOfWork unitOfWork, IHostEnvironment hostEnvironment)
+    private readonly IAuthService _authService;
+
+    public BookService(IMapper mapper, IUnitOfWork unitOfWork, IAuthService authService, IHostEnvironment hostEnvironment)
     {
+        _authService = authService;
         _hostEnvironment = hostEnvironment;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -43,9 +47,12 @@ public class BookService : IBookService
         try
         {
             Book newBook = new();
+
             bool isISBNExists = await _unitOfWork.Book.GetAnyAsync(y => y.ISBN == bookModel.ISBN && y.Id != bookModel.Id);
             if (isISBNExists) return new() { Status = false, Message = "This ISBN Number already exists." };
+            
             MapBookAndBookModel(ref newBook, ref bookModel, isCreate: true);
+            
             await FileUpload.UpdateProfileImageAsync(bookModel.UploadedBookImage, newBook, _hostEnvironment);
 
             await _unitOfWork.Book.AddAsync(newBook);
@@ -64,6 +71,12 @@ public class BookService : IBookService
     {
         try
         {
+            int userId = _authService.GetUserId();
+            if (userId == -1) return (new() { Status = false, Message = "Invalid user." }, new());
+            var userTable = _unitOfWork.User.Table;
+
+            var issuedBooks = _unitOfWork.IssuedBook.Table;
+            List<IssuedBook> issuedBooksToUser = await issuedBooks.Where(ib => ib.UserId == userId && ib.IsDeleted == false && ib.IsIssued == true).ToListAsync();
             // search = search.ToLower();
             PaginationViewModel<BookModel> booksPaginated = await _unitOfWork.Book.GetPaginationViewModel<BookModel>(
                 search: search,
@@ -82,11 +95,18 @@ public class BookService : IBookService
                     "title" => b => b.Title,
                     "publishYear" => b => b.PublishedYear,
                     "authorName" => b => b.AuthorName,
-                    _ => null
+                    _ => b => b.Id
                 },
                 isAscending
             );
-            ResultObject resultObject = new() { Status = true, Message = "Success" };
+
+            booksPaginated.IssuedBookIds = issuedBooksToUser.Select(b => b.BookId).ToList();
+
+            ResultObject resultObject = new()
+            {
+                Status = true,
+                Message = "Success"
+            };
             return (resultObject, booksPaginated);
         }
         catch (Exception ex)
@@ -110,6 +130,7 @@ public class BookService : IBookService
             if (isISBNExists) return new() { Status = false, Message = "This ISBN Number already exists." };
 
             MapBookAndBookModel(ref dbBook, ref bookModel, isCreate: false);
+            await FileUpload.UpdateProfileImageAsync(bookModel.UploadedBookImage, dbBook, _hostEnvironment);
 
             ResultObject saveResult = await _unitOfWork.SaveAsync();
             if (!saveResult.Status)
@@ -134,6 +155,7 @@ public class BookService : IBookService
             Book? dbBook = await _unitOfWork.Book.GetItemByIdAsync(bookId);
             if (dbBook == null) return new() { Status = false, Message = "Book Not Found" };
 
+            if(dbBook.BookStatus == BookStatusEnum.Issued) return new(){Status =false, Message = "You can't Delete Issued Book"};
             dbBook.IsDeleted = true;
 
             ResultObject saveResult = await _unitOfWork.SaveAsync();
@@ -170,10 +192,11 @@ public class BookService : IBookService
         }
     }
 
-    public async Task<ResultObject> IssueBookAsync(int bookId, int userId)
+    public async Task<ResultObject> IssueBookAsync(int bookId)
     {
         try
         {
+            int userId = _authService.GetUserId();
             Book? dbBook = await _unitOfWork.Book.GetItemByIdAsync(bookId);
             if (dbBook == null) return new() { Status = false, Message = "Book Not Found." };
 
@@ -183,7 +206,7 @@ public class BookService : IBookService
             if (!isUserExists) return new() { Status = false, Message = "User Not Found." };
 
             var issuedBooksTable = _unitOfWork.IssuedBook.Table;
-            List<IssuedBook> issuedBooks = await issuedBooksTable.Where(ibt => ibt.UserId == userId).ToListAsync();
+            List<IssuedBook> issuedBooks = await issuedBooksTable.Where(ibt => ibt.UserId == userId && ibt.IsDeleted == false && ibt.IsIssued == true).ToListAsync();
             if (issuedBooks.Count >= 3) return new() { Status = false, Message = "You can't issue more than 3 books." };
 
             IssuedBook newBookIssue = new()
@@ -204,13 +227,47 @@ public class BookService : IBookService
             {
                 return saveResult;
             }
-            return new(){Status= true, Message = "Book Issued!"};
+            return new() { Status = true, Message = "Book Issued!" };
 
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
             return new() { Status = false, Message = "Error Issuing Book." };
+        }
+    }
+
+    public async Task<ResultObject> ReturnBookAsync(int bookId)
+    {
+        try
+        {
+            int userId = _authService.GetUserId();
+            bool isUserExists = await _unitOfWork.User.GetAnyAsync(u => u.Id == userId);
+            if (!isUserExists) return new() { Status = false, Message = "User Not Found." };
+
+            Book? dbBook = await _unitOfWork.Book.GetItemByIdAsync(bookId);
+            if (dbBook == null) return new() { Status = false, Message = "Book Not Found." };
+
+            if (dbBook.BookStatus == BookStatusEnum.Available) return new() { Status = false, Message = "You can't return this book, Because it is already available." };
+
+            dbBook.BookStatus = BookStatusEnum.Available;
+
+            IssuedBook? issuedBook = await _unitOfWork.IssuedBook.GetFirstOrDefaultAsync(y => y.BookId == bookId && y.UserId == userId);
+            if (issuedBook == null) return new() { Status = false, Message = "You can't Return this book, Because you have not issued this book." };
+            issuedBook.IsIssued = false;
+
+            ResultObject saveResult = await _unitOfWork.SaveAsync();
+            if (!saveResult.Status)
+            {
+                return saveResult;
+            }
+            return new() { Status = true, Message = "Book Return Successfully!" };
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return new() { Status = false, Message = "Error Returning book." };
         }
     }
 }

@@ -12,17 +12,39 @@ using TestProject.Service.Interfaces;
 
 namespace TestProject.Service.Implementations;
 
-public class AuthService:IAuthService
+public class AuthService : IAuthService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public AuthService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor) 
+    public AuthService(IUnitOfWork unitOfWork, IHttpContextAccessor httpContextAccessor)
     {
         _httpContextAccessor = httpContextAccessor;
         _unitOfWork = unitOfWork;
     }
-    public static string GenerateToken(string email, RoleType role, string configKey, string issuer, string audience, int userId, bool? isRememberMe=false)
+
+    public int GetUserId()
+    {
+        if (_httpContextAccessor?.HttpContext?.User == null)
+        {
+            return -1;
+        }
+
+        string? userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId))
+        {
+            return -1;
+        }
+
+        if (!int.TryParse(userId, out int result))
+        {
+            return -1;
+        }
+
+        return result;
+    }
+    public static string GenerateToken(string email, RoleType role, string configKey, string issuer, string audience, int userId, bool? isRememberMe = false)
     {
         var claims = new List<Claim>
         {
@@ -45,29 +67,30 @@ public class AuthService:IAuthService
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
     public async Task<ResultObject> LoginAsync(LoginModel loginModel, string configKey, string issuer, string audience)
-    {   
+    {
         User? user = await _unitOfWork.User.GetFirstOrDefaultAsync(expression: x => x.Email.Trim() == loginModel.Email);
-        if(user == null) return new(){Status = false, Message = "User Not Found."};
+        if (user == null) return new() { Status = false, Message = "User Not Found." };
 
-        if(!Hash.VerifyPassword(user.Password, loginModel.Password.Trim()))
+        if (!Hash.VerifyPassword(user.Password, loginModel.Password.Trim()))
         {
-            return new(){Status = false, Message = "Invalid Credentials."};
+            return new() { Status = false, Message = "Invalid Credentials." };
         }
-        
+
         string accessToken = GenerateToken(user.Email, (RoleType)user.RoleId, configKey, issuer, audience, user.Id, loginModel.RememberMe);
-        if(string.IsNullOrEmpty(accessToken))
+        if (string.IsNullOrEmpty(accessToken))
         {
-            return new(){Status = false, Message = "Error while generating Token."};
+            return new() { Status = false, Message = "Error while generating Token." };
         }
 
-        _httpContextAccessor?.HttpContext?.Response.Cookies.Append("accessToken", accessToken, new(){
+        _httpContextAccessor?.HttpContext?.Response.Cookies.Append("accessToken", accessToken, new()
+        {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict,
             Expires = loginModel.RememberMe ? DateTime.UtcNow.AddDays(15) : DateTime.UtcNow.AddMinutes(30),
         });
-        
-        return new(){Status = true, Message = "User Logged In Successfully.", RedirectUrl = "/"};
+
+        return new() { Status = true, Message = "User Logged In Successfully.", RedirectUrl = "/" };
     }
-    
+
 }

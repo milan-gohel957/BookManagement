@@ -54,10 +54,13 @@
                     {
                         <button class="btn btn-primary" onclick="issueBookAsync(@Book.Id)">Issue</button>
                     }
+                    else if (Model.IssuedBookIds.Any(ib => ib == Book.Id))
+                    {
+                        <button class="btn btn-secondary" onclick="returnBookAsync(@Book.Id)">Return</button>
+                    }
                     else
                     {
                         <button class="btn btn-primary" disabled>Issue</button>
-
                     }
                 </td>
                 @if (User.IsInRole("Admin"))
@@ -93,8 +96,30 @@
                 $("#modalContainer").html(data);
                 $("#deleteModal").modal("show");
             }
-            else{
+            else {
                 console.error("Errror while fetching Delete Modal")
+            }
+        })
+    }
+
+    function returnBookAsync(bookId) {
+        $.ajax({
+            url: "/Book/ReturnBook",
+            type: 'POST',
+            data: { bookId, userId },
+            success: function (data) {
+                console.log(data.result);
+                if (data.result.status) {
+                    toastr.success(data.result.message);
+                    updateBookPagination();
+                }
+                else {
+                    toastr.error(data.result.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Ajax error:", error);
+                toastr.error("An error occurred while processing your request.");
             }
         })
     }
@@ -103,7 +128,7 @@
         $.ajax({
             url: "/Book/IssueBook",
             type: 'POST',
-            data: {bookId,userId},
+            data: { bookId, userId },
             success: function (data) {
                 console.log(data.result);
                 if (data.result.status) {

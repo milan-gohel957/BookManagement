@@ -28,9 +28,14 @@ public class BookController : Controller
         return Json(new {result = await _bookService.DeleteBookAsync(bookId)});
     }
     [HttpPost]
-    public async Task<IActionResult> IssueBook(int bookId, int userId)
+    public async Task<IActionResult> IssueBook(int bookId)
     {
-        return Json(new {result = await _bookService.IssueBookAsync(bookId:bookId, userId:userId)});
+        return Json(new {result = await _bookService.IssueBookAsync(bookId:bookId)});
+    }
+    [HttpPost]
+    public async Task<IActionResult> ReturnBook(int bookId)
+    {
+        return Json(new {result = await _bookService.ReturnBookAsync(bookId:bookId)});
     }
     [HttpPost]
     [Authorize(Roles = "Admin")]

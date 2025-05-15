@@ -9,6 +9,7 @@ public partial class PaginationViewModel<T> where T:class
     public int TotalPages{get;set;}
     public int From {get;set;}   
     public int To{get;set;}
+    public List<int> IssuedBookIds{get;set;} = new();
     public List<T> Items{get;set;} = new();
     
 }

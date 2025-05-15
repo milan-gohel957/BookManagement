@@ -24,7 +24,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         await _projectContext.SaveChangesAsync();
         return entity;
     }
-    public IQueryable<TEntity> Table => _dbSet;
+    public IQueryable<TEntity> Table => NonDeletedQuery();
     public IQueryable<TEntity> NonDeletedQuery()
     {
         return _dbSet.Where(e => EF.Property<bool>(e, "IsDeleted") == false);

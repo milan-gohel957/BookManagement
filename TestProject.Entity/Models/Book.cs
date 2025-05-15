@@ -26,4 +26,7 @@ public partial class Book
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public bool IsDeleted { get; set; }
+    public virtual ICollection<User> UsersIssued{get;set;} = new List<User>();
+
+
 }
