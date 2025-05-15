@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TestProject.Entity.Data;
@@ -11,9 +12,11 @@ using TestProject.Entity.Data;
 namespace TestProject.Entity.Migrations
 {
     [DbContext(typeof(ProjectContext))]
-    partial class ProjectContextModelSnapshot : ModelSnapshot
+    [Migration("20250515050855_BookDataSeed")]
+    partial class BookDataSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,9 +49,8 @@ namespace TestProject.Entity.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasDefaultValueSql("now()");
 
-                    b.Property<string>("ISBN")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("ISBN")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
@@ -80,13 +82,13 @@ namespace TestProject.Entity.Migrations
                             AuthorName = "Chinua Achebe",
                             BookImageUrl = "https://unsplash.com/photos/9DaOYUYnOls",
                             BookStatus = 2,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 607, DateTimeKind.Local).AddTicks(4065),
-                            ISBN = "7624133121",
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 971, DateTimeKind.Local).AddTicks(9505),
+                            ISBN = 0,
                             IsDeleted = false,
                             PublishedYear = 1958,
                             Title = "Things Fall Apart",
                             TotalPages = 209,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 607, DateTimeKind.Local).AddTicks(4066)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 971, DateTimeKind.Local).AddTicks(9507)
                         },
                         new
                         {
@@ -94,17 +96,17 @@ namespace TestProject.Entity.Migrations
                             AuthorName = "Hans Christian Andersen",
                             BookImageUrl = "https://unsplash.com/photos/CXYPfveiuis",
                             BookStatus = 2,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 607, DateTimeKind.Local).AddTicks(4069),
-                            ISBN = "9153676823",
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 971, DateTimeKind.Local).AddTicks(9509),
+                            ISBN = 0,
                             IsDeleted = false,
                             PublishedYear = 1836,
                             Title = "Fairy tales",
                             TotalPages = 784,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 607, DateTimeKind.Local).AddTicks(4070)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 971, DateTimeKind.Local).AddTicks(9510)
                         });
                 });
 
-            modelBuilder.Entity("TestProject.Entity.Models.IssuedBook", b =>
+            modelBuilder.Entity("TestProject.Entity.Models.IssuedBooks", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -140,7 +142,7 @@ namespace TestProject.Entity.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("IssuedBook");
+                    b.ToTable("IssuedBooks");
 
                     b.HasData(
                         new
@@ -226,126 +228,126 @@ namespace TestProject.Entity.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 55, 743, DateTimeKind.Local).AddTicks(6195),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 105, DateTimeKind.Local).AddTicks(8675),
                             Email = "user1@email.com",
                             IsDeleted = false,
-                            Password = "JvHv48waEmCI2AioWmn4bA==:NVIMc+FFr8ZOgoQHVzH+7ixy7XOtRCDOXjAiIJGx0ec=",
+                            Password = "2JZlAqbEyVjFKneoDyvpXQ==:MYCWImMz5WG/0NYJ4z53NfwGC96unQRoodm2RDtsEFk=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 55, 743, DateTimeKind.Local).AddTicks(6211)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 105, DateTimeKind.Local).AddTicks(8689)
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 55, 818, DateTimeKind.Local).AddTicks(574),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 180, DateTimeKind.Local).AddTicks(5078),
                             Email = "user2@email.com",
                             IsDeleted = false,
-                            Password = "k/5ugvtwJoBtVFB9+ClTQg==:RzEmVRH2/VlDDh3vEsT9IpRhrc/rbbkAKWSmAtp/e/s=",
+                            Password = "+RBU4DmhGl6l/HcnNIIYJw==:KtqwesrT3XKWGrQMo4yT2TQKYzRb7UF+ZEDKUgY1rXE=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 55, 818, DateTimeKind.Local).AddTicks(576)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 180, DateTimeKind.Local).AddTicks(5089)
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 55, 895, DateTimeKind.Local).AddTicks(336),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 256, DateTimeKind.Local).AddTicks(7295),
                             Email = "user3@email.com",
                             IsDeleted = false,
-                            Password = "MegY/IMEpXMgKCT4SjmzgA==:6/p1aEhWfNcJzwNMeANAutVe+FbwJ+2DiZzIbWeS4ME=",
+                            Password = "6RSZSQFK6tB6llfMf8pCrg==:sUq+c0gd3HBHKEgwAqlz4xhV+UXnd7ofi3CaxNjDtRE=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 55, 895, DateTimeKind.Local).AddTicks(355)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 256, DateTimeKind.Local).AddTicks(7318)
                         },
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 55, 971, DateTimeKind.Local).AddTicks(4577),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 334, DateTimeKind.Local).AddTicks(7653),
                             Email = "user4@email.com",
                             IsDeleted = false,
-                            Password = "KcUmbY8A1KNTBC5OVvasEg==:/YKBnVGyQHld7ITST57yZjittfOIxuO6hkuIFsgZ5iU=",
+                            Password = "BhaCsHdKoKI6ooHOIvDipQ==:Xn9yq9HyYyqEy3KBCo4pSut1x/5pef/h+ExEboRMYKc=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 55, 971, DateTimeKind.Local).AddTicks(4583)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 334, DateTimeKind.Local).AddTicks(7667)
                         },
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 47, DateTimeKind.Local).AddTicks(8768),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 412, DateTimeKind.Local).AddTicks(6117),
                             Email = "user5@email.com",
                             IsDeleted = false,
-                            Password = "OTiYbtLMps7m65A/1GmMfg==:m2IAdm0G4XkC+qb6bG3jdsf5Bw0FWJkgRHvLjLot5ss=",
+                            Password = "2TNuHam+3YUgtoA7nZZk7Q==:C2f3Mfb6vfL9JA1JXQ1sMIHQHCgbEIuVH5TGlduZMXE=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 47, DateTimeKind.Local).AddTicks(8796)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 412, DateTimeKind.Local).AddTicks(6132)
                         },
                         new
                         {
                             Id = 6,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 123, DateTimeKind.Local).AddTicks(4837),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 489, DateTimeKind.Local).AddTicks(7931),
                             Email = "user6@email.com",
                             IsDeleted = false,
-                            Password = "X1TmcDNMycJQFCaE5FS8oQ==:ST02WEv+jUB3sLZsfE8NJCSKgLiBWWi0DnSSixRPB2E=",
+                            Password = "FAZsE9qwk6Q4qbu8qpeoKg==:PFBccGt3SVsXJTxrmf6OnZja4oE5YvKVcKC3AbSOhLs=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 123, DateTimeKind.Local).AddTicks(4853)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 489, DateTimeKind.Local).AddTicks(7943)
                         },
                         new
                         {
                             Id = 7,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 211, DateTimeKind.Local).AddTicks(6290),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 566, DateTimeKind.Local).AddTicks(4178),
                             Email = "user7@email.com",
                             IsDeleted = false,
-                            Password = "Aghhia6ICko6WvO2k0TP7A==:fl/ZIb0UkQVaPo/5JRkAxrQkyCHBg15Ar9wYMTpY9Sw=",
+                            Password = "RqDHKzmyPoRosfepT0d++A==:QssfS9jNbKelk/OSMar6RJ+c4f90LHXgeOx4Rhqc9Qc=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 211, DateTimeKind.Local).AddTicks(6303)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 566, DateTimeKind.Local).AddTicks(4182)
                         },
                         new
                         {
                             Id = 8,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 296, DateTimeKind.Local).AddTicks(2617),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 655, DateTimeKind.Local).AddTicks(9526),
                             Email = "user8@email.com",
                             IsDeleted = false,
-                            Password = "VlmPJdeLoUuhsu58VpQrmQ==:9Q8on0q6SpSdNTYZf8kzHpB4v/+v58E9+j5IYymv4i4=",
+                            Password = "DmU7OQmjKZbx30ZQPN6Hhg==:aHjirvGsjYnpE4mUTvdVhSUwKKDjizzmAazUhrN+F3g=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 296, DateTimeKind.Local).AddTicks(2622)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 655, DateTimeKind.Local).AddTicks(9533)
                         },
                         new
                         {
                             Id = 9,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 376, DateTimeKind.Local).AddTicks(2750),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 742, DateTimeKind.Local).AddTicks(8618),
                             Email = "user9@email.com",
                             IsDeleted = false,
-                            Password = "oszIgfh22KCFvGXw14LO+Q==:fyiTmbI0Nd7k9qRQXOsmbcJ/v3mXGOStQ7eVDyqS7ng=",
+                            Password = "m4/KsgOwx4rWRJiSfu4fGg==:U0i8oktEFOxWU3nmwzKNV42m/s4+KvUBOJPbawHvbQg=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 376, DateTimeKind.Local).AddTicks(2754)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 742, DateTimeKind.Local).AddTicks(8624)
                         },
                         new
                         {
                             Id = 10,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 456, DateTimeKind.Local).AddTicks(7652),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 817, DateTimeKind.Local).AddTicks(7070),
                             Email = "user10@email.com",
                             IsDeleted = false,
-                            Password = "6hIcoO9hSg5dV81ZNOzj8g==:bwLnsDHJXPPC1ajzTi1WWg4OAN+QL+2j9EzM+JWGiJ8=",
+                            Password = "r6t6byjPGw9RpHbeBngASw==:XqRXzTb3kagYneHdV8yALNm+WdkJCPHuI0WVOCXkZ/A=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 456, DateTimeKind.Local).AddTicks(7657)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 817, DateTimeKind.Local).AddTicks(7074)
                         },
                         new
                         {
                             Id = 11,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 532, DateTimeKind.Local).AddTicks(8654),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 895, DateTimeKind.Local).AddTicks(9341),
                             Email = "user10@email.com",
                             IsDeleted = false,
-                            Password = "b1x31SVP27oEkyCEa4bcCg==:3zuRRbPdsgJOqmjzQhtKK+23/rxovVzs+ncQRqd6FdA=",
+                            Password = "bVU6nAY0KcqL+dFNJeC1YA==:LbjpainoTzhk59jKfGSIQ52yAJOzrYQCIvcfJLAADWY=",
                             RoleId = 2,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 532, DateTimeKind.Local).AddTicks(8660)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 895, DateTimeKind.Local).AddTicks(9350)
                         },
                         new
                         {
                             Id = 12,
-                            CreatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 607, DateTimeKind.Local).AddTicks(3108),
+                            CreatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 971, DateTimeKind.Local).AddTicks(8546),
                             Email = "admin1@email.com",
                             IsDeleted = false,
-                            Password = "qC+WRyW+XPVaO0TNAZlR3A==:/n5yrxZoGwVUvgUWJTmQZ5YP2CI3fIF2Iv5eFmcHlzY=",
+                            Password = "pXcF8y2AM9WQhKuM8wrEWA==:hOm2Qk6ZU13XPsoYYbZBQHS/DmxMCPwLcvJpTFasb78=",
                             RoleId = 1,
-                            UpdatedAt = new DateTime(2025, 5, 15, 10, 48, 56, 607, DateTimeKind.Local).AddTicks(3110)
+                            UpdatedAt = new DateTime(2025, 5, 15, 10, 38, 54, 971, DateTimeKind.Local).AddTicks(8549)
                         });
                 });
 
-            modelBuilder.Entity("TestProject.Entity.Models.IssuedBook", b =>
+            modelBuilder.Entity("TestProject.Entity.Models.IssuedBooks", b =>
                 {
                     b.HasOne("TestProject.Entity.Models.Book", "Book")
                         .WithMany()

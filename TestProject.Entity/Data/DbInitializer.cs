@@ -46,7 +46,7 @@ public class DbInitializer
                 .HasDefaultValueSql("now()")
                 .HasColumnType("timestamp without time zone");
         });
-        modelBuilder.Entity<IssuedBooks>(entity =>
+        modelBuilder.Entity<IssuedBook>(entity =>
         {
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("now()")
@@ -74,21 +74,12 @@ public class DbInitializer
             new Role() { Id = 2, RoleName = "User" }
         );
         modelBuilder.Entity<Book>().HasData(
-            new Book() {Id = 1, AuthorName = "Chinua Achebe" , BookImageUrl = "https://unsplash.com/photos/9DaOYUYnOls", TotalPages = 209, Title = "Things Fall Apart", PublishedYear = 1958, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now},
-            new Book() {Id = 2, AuthorName = "Hans Christian Andersen" , BookImageUrl = "https://unsplash.com/photos/9DaOYUYnOls", TotalPages = 209, Title = "Things Fall Apart", PublishedYear = 1958, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now}
+            new Book() {Id = 1, AuthorName = "Chinua Achebe" , BookImageUrl = "https://unsplash.com/photos/9DaOYUYnOls", TotalPages = 209, Title = "Things Fall Apart", PublishedYear = 1958, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, ISBN = "7624133121"},
+            new Book() {Id = 2, AuthorName = "Hans Christian Andersen" , BookImageUrl = "https://unsplash.com/photos/CXYPfveiuis", TotalPages = 784, Title = "Fairy tales", PublishedYear = 1836, CreatedAt = DateTime.Now, UpdatedAt = DateTime.Now, ISBN = "9153676823"}
+        );
+        modelBuilder.Entity<IssuedBook>().HasData(
+            new IssuedBook() {Id = 1, UserId = 1, BookId = 1, IsIssued = true, }
         );
     }
 }
 
-
-//   {
-//     "id": "002",
-//     "author": "Hans Christian Andersen",
-//     "country": "Denmark",
-//     "imageLink": "https://unsplash.com/photos/CXYPfveiuis",
-//     "language": "Danish",
-//     "link": "https://en.wikipedia.org/wiki/Fairy_Tales_Told_for_Children._First_Collection.\n",
-//     "pages": 784,
-//     "title": "Fairy tales",
-//     "year": 1836
-//   },

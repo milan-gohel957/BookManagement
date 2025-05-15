@@ -18,7 +18,12 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         _projectContext = projectContext;
         _dbSet = _projectContext.Set<TEntity>();
     }
-
+    public async Task<TEntity> AddAsync(TEntity entity)
+    {
+        await _dbSet.AddAsync(entity);
+        await _projectContext.SaveChangesAsync();
+        return entity;
+    }
     public IQueryable<TEntity> Table => _dbSet;
     public IQueryable<TEntity> NonDeletedQuery()
     {
@@ -31,6 +36,15 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
         return getDeleted == true ? await _dbSet.FirstOrDefaultAsync(expression) : await NonDeletedQuery().FirstOrDefaultAsync(expression);
     }
 
+    public async Task<TEntity?> GetItemByIdAsync(int itemId, bool? getDeleted = false)
+    {
+        return getDeleted == true ? await _dbSet.FirstOrDefaultAsync(y => EF.Property<int>(y, "Id") == itemId):await NonDeletedQuery().FirstOrDefaultAsync(y => EF.Property<int>(y, "Id") == itemId);
+    }
+    public async Task<bool> GetAnyAsync(Expression<Func<TEntity, bool>> expresssion, bool? getDeleted = false)
+    {
+        return getDeleted == true ? await _dbSet.AnyAsync(expresssion) :await  NonDeletedQuery().AnyAsync(expresssion);
+    }
+ 
     public async Task<PaginationViewModel<T>> GetPaginationViewModel<T>(string search,
        string order,
        int page,
@@ -41,6 +55,10 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
        Func<IQueryable<TEntity>, IQueryable<TEntity>>? includes = null) where T : class
     {
         IQueryable<TEntity> query = _dbSet;
+        if (includes != null)
+        {
+            query = includes(query);
+        }
 
         if (order != null)
         {
@@ -51,10 +69,6 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEnt
             }
         }
 
-        if (includes != null)
-        {
-            query = includes(query);
-        }
         if (!string.IsNullOrEmpty(search))
             query = query.Where(filter);
         if (orderBy != null)

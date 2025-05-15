@@ -9,6 +9,8 @@ public class UnitOfWork : IUnitOfWork
 {
     public IGenericRepository<User> User { get; private set; }
     public IGenericRepository<Role> Role { get; private set; }
+    public IGenericRepository<Book> Book{get; private set;}
+    public IGenericRepository<IssuedBook> IssuedBook{get; private set;}
     private IMapper _mapper;
     private ProjectContext _context;
 
@@ -18,6 +20,8 @@ public class UnitOfWork : IUnitOfWork
         _mapper = mapper;
         User = new GenericRepository<User>(_context, _mapper);
         Role = new GenericRepository<Role>(_context, _mapper);
+        Book = new GenericRepository<Book>(_context,_mapper);
+        IssuedBook = new GenericRepository<IssuedBook>(_context,_mapper);
     }
 
     public async Task<ResultObject> SaveAsync()

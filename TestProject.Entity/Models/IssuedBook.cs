@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TestProject.Entity.Models;
 
-public class IssuedBooks
+public class IssuedBook
 {
+    [Key]
+    public int Id{get;set;}
     [ForeignKey("User")]
     [Required]
     public int UserId{get;set;}
